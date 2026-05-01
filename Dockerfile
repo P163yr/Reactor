@@ -7,12 +7,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     libgl1 \
     libglib2.0-0 \
+    libxcb1 \
+    libx11-6 \
+    libxext6 \
+    libsm6 \
     && rm -rf /var/lib/apt/lists/*
 
 # install custom nodes into comfyui
 RUN comfy node install comfyui-videohelpersuite
 RUN comfy node install comfyui-frame-interpolation
-RUN comfy node install comfyui-reactor
+
+# install ReActor manually
+# Important: do NOT rely on "comfy node install comfyui-reactor"
+RUN rm -rf /comfyui/custom_nodes/ComfyUI-ReActor \
+    && git clone --depth=1 https://github.com/Gourieff/ComfyUI-ReActor /comfyui/custom_nodes/ComfyUI-ReActor \
+    && python3 -m pip install --no-cache-dir setuptools importlib-metadata wheel \
+    && python3 -m pip install --no-cache-dir -r /comfyui/custom_nodes/ComfyUI-ReActor/requirements.txt \
+    && python3 /comfyui/custom_nodes/ComfyUI-ReActor/install.py
 
 # download ReActor HyperSwap model
 RUN comfy model download \
@@ -28,25 +39,21 @@ RUN comfy model download \
 
 # download YOLOv5l face detection helper used by ReActor / CodeFormer
 RUN comfy model download \
-    --url https://huggingface.co/martintomov/comfy/resolve/main/facedetection/yolov5l-face.pth \
+    --url https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/yolov5l-face.pth \
     --relative-path models/facedetection \
     --filename yolov5l-face.pth
 
 # download face parsing helper used during face restoration
 RUN comfy model download \
-    --url https://huggingface.co/gmk123/GFPGAN/resolve/main/parsing_parsenet.pth \
+    --url https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_parsenet.pth \
     --relative-path models/facedetection \
     --filename parsing_parsenet.pth
 
 # download FILM VFI model into the Frame Interpolation custom node checkpoint folder
 RUN comfy model download \
-    --url https://huggingface.co/nguu/film-pytorch/resolve/main/film_net_fp32.pt \
+    --url https://github.com/Fannovel16/ComfyUI-Frame-Interpolation/releases/download/models/film_net_fp32.pt \
     --relative-path custom_nodes/ComfyUI-Frame-Interpolation/ckpts/film \
     --filename film_net_fp32.pt
 
-# copy all input data into comfyui input folder
-# Your workflow expects:
-# - Elon_Musk_-_54820081119_(cropped).jpg.webp
-# - Download (1).mp4
-# Put those inside an input/ folder next to this Dockerfile, then uncomment:
+# optional: copy fixed input files into comfyui input folder
 # COPY input/ /comfyui/input/
