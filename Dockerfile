@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # install custom nodes into comfyui
 RUN comfy node install comfyui-videohelpersuite
+RUN comfy node install video-output-bridge
 RUN comfy node install comfyui-frame-interpolation
 
 # install ReActor manually
