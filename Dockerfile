@@ -39,19 +39,19 @@ RUN comfy model download \
 
 # download YOLOv5l face detection helper used by ReActor / CodeFormer
 RUN comfy model download \
-    --url https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/yolov5l-face.pth \
+    --url https://huggingface.co/martintomov/comfy/resolve/main/facedetection/yolov5l-face.pth \
     --relative-path models/facedetection \
     --filename yolov5l-face.pth
 
 # download face parsing helper used during face restoration
 RUN comfy model download \
-    --url https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_parsenet.pth \
+    --url https://huggingface.co/gmk123/GFPGAN/resolve/main/parsing_parsenet.pth \
     --relative-path models/facedetection \
     --filename parsing_parsenet.pth
 
 # download FILM VFI model into the Frame Interpolation custom node checkpoint folder
 RUN comfy model download \
-    --url https://github.com/Fannovel16/ComfyUI-Frame-Interpolation/releases/download/models/film_net_fp32.pt \
+    --url https://huggingface.co/nguu/film-pytorch/resolve/887b2c42bebcb323baf6c3b6d59304135699b575/film_net_fp32.pt \
     --relative-path custom_nodes/ComfyUI-Frame-Interpolation/ckpts/film \
     --filename film_net_fp32.pt
 
